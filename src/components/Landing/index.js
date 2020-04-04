@@ -2,10 +2,7 @@ import React from 'react';
 import Navigation from '../Navigation';
 import Bus from '../../img/bus.svg';
 const LandingPage = () => (
-  <div class="flex flex-col lg:flex-row flex-shrink-0 bg-gray-900 text-white h-screen overflow-hidden">
-<div class="lg:w-24 w-full flex justify-center items-center overflow-hidden">
-<Navigation />
-</div>
+  <div class="flex flex-col lg:flex-row flex-shrink-0 bg-white-900 text-white h-screen overflow-hidden">
   <div class="flex-1 overflow-y-auto">
       <div class="container mx-auto px-8 py-auto">
           <main class="flex flex-col-reverse sm:flex-row jusitfy-between items-center py-12">
