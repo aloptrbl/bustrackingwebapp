@@ -1,49 +1,8 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import { withAuthorization } from '../Session';
 import Bus from '../../img/school-bus.svg';
-import {
-  withGoogleMap,
-  GoogleMap,
-  Marker,
-} from "react-google-maps";
-const MapWithAMarker = withGoogleMap(props =>
-  <GoogleMap
-  center={props.pos}
-    defaultZoom={16}
-    defaultCenter={{ lat: -34.397, lng: 150.644 }}
-  >
-     <Marker
-      position={{ lat: props.latitude, lng: props.longitude }}
-    />
-  </GoogleMap>
-);
 
-
-
-
-function HomePage() {
-  const [location, setLocation] = useState(0);
-  var error = function(error) {
-console.log(error.code);
-  };
-
-  var option =  {
-    enableHighAccuracy: true,
-  };
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(position, error, option) {
- 
-        var pos = {
-          lat: parseFloat(position.coords.latitude),
-          lng: parseFloat(position.coords.longitude)
-        }; 
-        setLocation(pos);
-    
-      })
-    }
-  });
-return (
+const Drivers = () => (
   <div class="bg-gray-900 font-sans h-screen">
    <header class="fixed z-50 h-16 w-full bg-gray-900 shadow flex items-center justify-between">
     <div class="flex items-center h-full">
@@ -84,7 +43,7 @@ return (
           </a>
         </div>
         <div class="group relative sidebar-item with-children">
-        <a href="/drivers" class="block xl:flex xl:items-center text-center xl:text-left shadow-light xl:shadow-none py-6 xl:py-2 xl:px-4 border-l-4 border-transparent hover:bg-gray-900">
+        <a href="/drivers" class="active block xl:flex xl:items-center text-center xl:text-left shadow-light xl:shadow-none py-6 xl:py-2 xl:px-4 border-l-4 border-transparent hover:bg-gray-900">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="h-6 w-6 text-grey-darker fill-current xl:mr-2"><path fill="white" d="M15 19a3 3 0 0 1-6 0H4a1 1 0 0 1 0-2h1v-6a7 7 0 0 1 4.02-6.34 3 3 0 0 1 5.96 0A7 7 0 0 1 19 11v6h1a1 1 0 0 1 0 2h-5zm-4 0a1 1 0 0 0 2 0h-2zm0-12.9A5 5 0 0 0 7 11v6h10v-6a5 5 0 0 0-4-4.9V5a1 1 0 0 0-2 0v1.1z" class="heroicon-ui"></path></svg>
             <div class="text-white text-xs">Drivers</div>
           </a>
@@ -95,27 +54,11 @@ return (
     </div>
     
     <div class="bg-white h-full min-h-screen w-5/6">
-    {/* <GoogleMap
-    defaultZoom={8}
-     defaultCenter={{ lat:  location.lat, lng: location.lng }}
-  googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyAXUjs2vwTMbVns-lsNCjpImy5LgOszAB0&v=3.exp&libraries=geometry,drawing,places"
-  loadingElement={<div  style={{ height: `100%` }} />}
-  containerElement={<div style={{ height: `100vh` }} />}
-  mapElement={<div  style={{ height: `100%` }} />}
-/> */}
-<MapWithAMarker
-googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4R6AN7SmujjPUIGKdyao2Kqitzr1kiRg&v=3.exp&libraries=geometry,drawing,places"
-pos={location}
-latitude={location.lat}
-longitude={location.lng}
-  containerElement={<div style={{ height: `100vh` }} />}
-  mapElement={<div style={{ height: `100%` }} />}
-/>
+
 
   </div>
   </div>
   </div>
   );
-}
 const condition = authUser => !!authUser;
-export default withAuthorization(condition)(HomePage);
+export default withAuthorization(condition)(Drivers);
