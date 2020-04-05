@@ -32,5 +32,13 @@ class Firebase {
       // *** User API ***
   user = uid => this.db.ref(`users/${uid}`);
   users = () => this.db.ref('users');
+  drivers = () => this.db.ref('drivers');
+
+  writeUserData = (userId, name, platenumber) => 
+    this.db.ref('drivers/' + userId).set({
+      name: name,
+      plate_number : platenumber
+    });
+  
 }
 export default Firebase;

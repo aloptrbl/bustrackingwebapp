@@ -1,8 +1,63 @@
-import React from 'react';
+import React, {Component} from 'react';
 import { withAuthorization } from '../Session';
 import Bus from '../../img/school-bus.svg';
+import { withFirebase } from '../Firebase';
 
-const Drivers = () => (
+
+class Drivers extends Component { 
+constructor(props) {
+    super(props);
+    this.state = {
+        User: [],
+        active: true,
+        deviceid: null,
+        drivername: null,
+        platenumber: null
+    
+    };
+}
+
+toggleClass() {
+    const currentState = this.state.active;
+    console.log("active"+ currentState);
+    this.setState({ active: !currentState });
+};
+
+driverNameChangeHandler = (event) => {
+    this.setState({drivername: event.target.value});
+  }
+
+  deviceIdChangeHandler = (event) => {
+    this.setState({deviceid: event.target.value});
+  }
+
+  plateNumberChangeHandler = (event) => {
+    this.setState({platenumber: event.target.value});
+  }
+
+mySubmitHandler = (event) => {
+    event.preventDefault();
+    this.props.firebase.writeUserData(this.state.deviceid, this.state.drivername, this.state.platenumber).then((result) => {
+        const currentState = this.state.active;
+        console.log("active"+ currentState);
+        this.setState({ active: !currentState, deviceid: '', platenumber: '', drivername: '' });
+    })
+  }
+
+componentDidMount()
+{
+    this.props.firebase.drivers().on('value', snapshot => {
+        const usersObject = snapshot.val();
+        const usersList = usersObject !== null ? Object.keys(usersObject).map(key => ({
+          ...usersObject[key],
+          uid: key,
+        })) : null;
+        this.setState({User: usersList});
+      });
+      
+}
+render() {
+    return(
   <div class="bg-gray-900 font-sans h-screen">
    <header class="fixed z-50 h-16 w-full bg-gray-900 shadow flex items-center justify-between">
     <div class="flex items-center h-full">
@@ -43,7 +98,7 @@ const Drivers = () => (
           </a>
         </div>
         <div class="group relative sidebar-item with-children">
-        <a href="/drivers" class="active block xl:flex xl:items-center text-center xl:text-left shadow-light xl:shadow-none py-6 xl:py-2 xl:px-4 border-l-4 border-transparent hover:bg-gray-900">
+        <a href="/drivers" class={"active block xl:flex xl:items-center text-center xl:text-left shadow-light xl:shadow-none py-6 xl:py-2 xl:px-4 border-l-4 border-transparent hover:bg-gray-900"}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="h-6 w-6 text-grey-darker fill-current xl:mr-2"><path fill="white" d="M15 19a3 3 0 0 1-6 0H4a1 1 0 0 1 0-2h1v-6a7 7 0 0 1 4.02-6.34 3 3 0 0 1 5.96 0A7 7 0 0 1 19 11v6h1a1 1 0 0 1 0 2h-5zm-4 0a1 1 0 0 0 2 0h-2zm0-12.9A5 5 0 0 0 7 11v6h10v-6a5 5 0 0 0-4-4.9V5a1 1 0 0 0-2 0v1.1z" class="heroicon-ui"></path></svg>
             <div class="text-white text-xs">Drivers</div>
           </a>
@@ -53,12 +108,76 @@ const Drivers = () => (
   
     </div>
     
-    <div class="bg-white h-full min-h-screen w-5/6">
+    <div class="bg-white p-10  h-full min-h-screen w-5/6">
+<button onClick={()=> this.toggleClass()} class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">+ Add</button>
+<table class="table-fixed w-auto">
+  <thead>
+    <tr>
+      <th class="w-1/2 px-4 py-2">Driver Name</th>
+      <th class="w-1/4 px-4 py-2">Plate Number</th>
+      <th class="w-1/4 px-4 py-2">Device ID</th>
+    </tr>
+  </thead>
+  <tbody>
+    {this.state.User === null  ? null : this.state.User.map((item, i) => (
+ <tr>
+ <td class="border px-4 py-2">{item.name}</td>
+    <td class="border px-4 py-2">{item.plate_number}</td>
+    <td class="border px-4 py-2">{item.uid}</td>
+</tr>
+))}
+  </tbody>
+</table>
+  </div>
+  </div>
+  <div class={`absolute z-50 bg-gray-900  bottom-0 h-screen w-6/12  lg:w-2/6 sm:w-6/6 md:w-3/5 right-0 ${ this.state.active ? 'hidden' : null}`}>
+      <h1 class="text-white text-center pt-5 font-bold text-lg">Add Driver</h1>
+      <form onSubmit={this.mySubmitHandler} class="w-full max-w-sm p-5">
+  <div class="md:flex md:items-center mb-6">
+    <div class="md:w-1/3">
+      <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="inline-full-name">
+        Device ID
+      </label>
+    </div>
+    <div class="md:w-2/3">
+      <input class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500" id="inline-full-name" type="text" name="deviceid" onChange={this.deviceIdChangeHandler} value={this.state.deviceid} />
+    </div>
+  </div>
+  <div class="md:flex md:items-center mb-6">
+    <div class="md:w-1/3">
+      <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="inline-full-name">
+        Driver Name
+      </label>
+    </div>
+    <div class="md:w-2/3">
+      <input class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500" id="inline-full-name" type="text" name="drivername"  onChange={this.driverNameChangeHandler} value={this.state.drivername} />
+    </div>
+  </div>
+  <div class="md:flex md:items-center mb-6">
+    <div class="md:w-1/3">
+      <label class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4" for="inline-full-name">
+        Plate Number
+      </label>
+    </div>
+    <div class="md:w-2/3">
+      <input class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500" id="inline-full-name" type="text" name="platenumber" onChange={this.plateNumberChangeHandler} value={this.state.platenumber} />
+    </div>
+  </div>
 
-
+  <div class="md:flex md:items-center mb-6">
+    <div class="md:w-1/3"></div>
   </div>
+  <div class="md:flex md:items-center">
+    <div class="md:w-1/3"></div>
+    <div class="md:w-2/3">
+      <button type='submit' class="shadow bg-blue-500 hover:bg-blue-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded w-full">
+        Add
+      </button>
+    </div>
   </div>
+</form>
+      </div>
   </div>
-  );
+  ); } }
 const condition = authUser => !!authUser;
-export default withAuthorization(condition)(Drivers);
+export default withFirebase(Drivers);
