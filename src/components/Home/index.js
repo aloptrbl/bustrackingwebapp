@@ -1,48 +1,84 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import { withAuthorization } from '../Session';
-import Bus from '../../img/school-bus.svg';
-import {
+import Bus from '../../img/icons8-bus-100.png';
+const { compose, withProps, withStateHandlers } = require("recompose");
+const {
+  withScriptjs,
   withGoogleMap,
   GoogleMap,
   Marker,
-} from "react-google-maps";
-const MapWithAMarker = withGoogleMap(props =>
+} = require("react-google-maps");
+const StyledMapWithAnInfoBox = compose(
+  withProps({
+    googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyAXUjs2vwTMbVns-lsNCjpImy5LgOszAB0&callback=initialize",
+    loadingElement: <div style={{ height: `100%` }} />,
+    center: { lat: 25.03, lng: 121.6 },
+  }),
+  withStateHandlers(() => ({
+    isOpen: false,
+  }), {
+    onToggleOpen: ({ isOpen }) => () => ({
+      isOpen: !isOpen,
+    })
+  }),
+  withScriptjs,
+  withGoogleMap
+)(props =>
   <GoogleMap
-  center={props.pos}
-    defaultZoom={16}
-    defaultCenter={{ lat: -34.397, lng: 150.644 }}
+  center={props.location}
+  defaultZoom={16}
+  defaultCenter={{ lat: -34.397, lng: 150.644 }}
   >
-     <Marker
+    <Marker
+    icon={{url: Bus,
+      scaledSize: new window.google.maps.Size(70, 70)}}
       position={{ lat: props.latitude, lng: props.longitude }}
-    />
+
+    >
+    </Marker>
   </GoogleMap>
 );
 
 
 
 
-function HomePage() {
-  const [location, setLocation] = useState(0);
-  var error = function(error) {
-console.log(error.code);
-  };
 
-  var option =  {
-    enableHighAccuracy: true,
-  };
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(position, error, option) {
- 
-        var pos = {
-          lat: parseFloat(position.coords.latitude),
-          lng: parseFloat(position.coords.longitude)
-        }; 
-        setLocation(pos);
-    
-      })
-    }
-  });
+
+
+class HomePage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {location: null, latitude: null, longitude: null}
+    this.getCurrentLocation = this.getCurrentLocation.bind(this);
+    this.socket = new WebSocket('wss://arduino-servers.herokuapp.com/');
+  }
+  componentDidMount() {
+    this.getCurrentLocation();
+    this.socket.onmessage= (e) => {
+      const obj = JSON.parse(e.data);
+      this.setState({ latitude: parseFloat(obj["latitude"]), longitude: parseFloat(obj["longitude"])});
+   }
+}
+
+componentWillUnmount() {
+  this.socket.close();
+}
+
+getCurrentLocation = () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition((position, error, option) => {
+
+      var pos = {
+        lat: parseFloat(position.coords.latitude),
+        lng: parseFloat(position.coords.longitude)
+      }; 
+      this.setState({location: pos});
+  
+    })
+  }
+}
+
+render(){
 return (
   <div class="bg-gray-900 font-sans h-screen">
    <header class="fixed z-50 h-16 w-full bg-gray-900 shadow flex items-center justify-between">
@@ -103,11 +139,11 @@ return (
   containerElement={<div style={{ height: `100vh` }} />}
   mapElement={<div  style={{ height: `100%` }} />}
 /> */}
-<MapWithAMarker
+<StyledMapWithAnInfoBox 
+location={this.state.location}
 googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4R6AN7SmujjPUIGKdyao2Kqitzr1kiRg&v=3.exp&libraries=geometry,drawing,places"
-pos={location}
-latitude={location.lat}
-longitude={location.lng}
+latitude={this.state.latitude}
+longitude={this.state.longitude}
   containerElement={<div style={{ height: `100vh` }} />}
   mapElement={<div style={{ height: `100%` }} />}
 />
@@ -116,6 +152,7 @@ longitude={location.lng}
   </div>
   </div>
   );
+}
 }
 const condition = authUser => !!authUser;
 export default withAuthorization(condition)(HomePage);
