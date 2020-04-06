@@ -9,8 +9,6 @@ import Bus from '../../img/realbus.jpg';
 const SignInPage = () => (
   <div>
     <SignInForm />
-    <PasswordForgetLink />
-    <SignUpLink />
   </div>
 );
 const INITIAL_STATE = {
