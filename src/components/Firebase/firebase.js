@@ -31,12 +31,21 @@ class Firebase {
 
       // *** User API ***
   user = uid => this.db.ref(`users/${uid}`);
+  driver = driver => this.db.ref(`drivers/${driver}`);
   users = () => this.db.ref('users');
   drivers = () => this.db.ref('drivers');
 
   writeUserData = (userId, name, platenumber) => 
-    this.db.ref('drivers/' + userId).set({
-      name: name,
+    this.db.ref('drivers').push().set({
+      device_id: userId,
+      driver_name: name,
+      plate_number : platenumber
+    });
+
+    updateUserData = (uid, deviceid, name, platenumber) => 
+    this.db.ref('drivers/' + uid).set({
+      device_id: deviceid,
+      driver_name: name,
       plate_number : platenumber
     });
   
