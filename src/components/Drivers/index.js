@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withAuthorization } from "../Session";
 import Bus from "../../img/school-bus.svg";
 import { withFirebase } from "../Firebase";
-
+import cogoToast from 'cogo-toast';
 class Drivers extends Component {
   constructor(props) {
     super(props);
@@ -83,6 +83,7 @@ this.props.firebase.driver(id).remove();
           platenumber: "",
           drivername: "",
         });
+        cogoToast.success('You successfully add new device details.');
       });
   };
 
@@ -103,6 +104,7 @@ this.props.firebase.driver(id).remove();
           edit_platenumber: "",
           edit_drivername: "",
         });
+        cogoToast.success('You successfully edit device details.');
       });
   };
 
@@ -121,6 +123,7 @@ this.props.firebase.driver(id).remove();
   }
   render() {
     return (
+
       <div class="bg-gray-900 font-sans h-screen">
         <header class="fixed z-50 h-16 w-full bg-gray-900 shadow flex items-center justify-between">
           <div class="flex items-center h-full">
@@ -174,7 +177,7 @@ this.props.firebase.driver(id).remove();
               <div class="group relative sidebar-item with-children">
                 <a
                   href="/home"
-                  class="block xl:flex xl:items-center text-center xl:text-left shadow-light xl:shadow-none py-6 xl:py-2 xl:px-4 border-l-4 border-transparent hover:bg-gray-900"
+                  class="block xl:flex xl:items-center text-center xl:text-left shadow-light xl:shadow-none py-6 xl:py-2 xl:px-4 border-l-4  border-transparent hover:bg-gray-900"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -196,7 +199,7 @@ this.props.firebase.driver(id).remove();
                 <a
                   href="/drivers"
                   class={
-                    "active block xl:flex xl:items-center text-center xl:text-left shadow-light xl:shadow-none py-6 xl:py-2 xl:px-4 border-l-4 border-transparent hover:bg-gray-900"
+                    "active bg-gray-900 block xl:flex xl:items-center text-center xl:text-left shadow-light xl:shadow-none py-6 xl:py-2 xl:px-4 border-l-4 border-transparent hover:bg-gray-900"
                   }
                 >
                   <svg
