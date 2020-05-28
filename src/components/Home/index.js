@@ -8,6 +8,7 @@ const {
   GoogleMap,
   Marker,
 } = require("react-google-maps");
+const { InfoBox } = require("react-google-maps/lib/components/addons/InfoBox");
 const StyledMapWithAnInfoBox = compose(
   withProps({
     googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyAXUjs2vwTMbVns-lsNCjpImy5LgOszAB0&callback=initialize",
@@ -32,9 +33,26 @@ const StyledMapWithAnInfoBox = compose(
     <Marker
     icon={{url: Bus,
       scaledSize: new window.google.maps.Size(70, 70)}}
+      onClick={props.onToggleOpen}
       position={{ lat: props.latitude, lng: props.longitude }}
 
     >
+      {props.isOpen && <InfoBox
+        onCloseClick={props.onToggleOpen}
+        options={{ closeBoxURL: ``, enableEventPropagation: true }}
+      >
+        <div style={{ backgroundColor: `white`, opacity: 0.75, padding: `12px`, borderRadius: 10, borderWidth: `2px`, borderColor: `gray` }}>
+          <div style={{ fontSize: `16px`, fontColor: `#08233B` }}>
+      <b class="text-center">Bus Detail</b>
+      <h6>Plate No: {props.plate_number}</h6>
+      <p>Driver Name: {props.driver_name}</p>
+      <p>Device ID: {props.device_id}</p>
+      <b class="text-center">Speed</b>
+      <p>{props.kmph} KMPH</p>
+      <p>{props.mph} MPH</p>
+          </div>
+        </div>
+      </InfoBox>}
     </Marker>
   </GoogleMap>
 );
@@ -56,7 +74,8 @@ class HomePage extends React.Component {
     this.getCurrentLocation();
     this.socket.onmessage= (e) => {
       const obj = JSON.parse(e.data);
-      this.setState({ latitude: parseFloat(obj["latitude"]), longitude: parseFloat(obj["longitude"])});
+      console.log(obj);
+      this.setState({kmph: obj["kmph"], mph: obj["mph"], device_id: obj["device_id"], driver_name: obj["driver_name"], plate_number: obj["plate_number"],  latitude: parseFloat(obj["latitude"]), longitude: parseFloat(obj["longitude"])});
    }
 }
 
@@ -144,6 +163,11 @@ location={this.state.location}
 googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4R6AN7SmujjPUIGKdyao2Kqitzr1kiRg&v=3.exp&libraries=geometry,drawing,places"
 latitude={this.state.latitude}
 longitude={this.state.longitude}
+device_id={this.state.device_id}
+driver_name={this.state.driver_name}
+plate_number={this.state.plate_number}
+kmph={this.state.kmph}
+mph={this.state.mph}
   containerElement={<div style={{ height: `100vh` }} />}
   mapElement={<div style={{ height: `100%` }} />}
 />

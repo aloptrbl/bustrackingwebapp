@@ -13,9 +13,13 @@ class Drivers extends Component {
       deviceid: null,
       drivername: null,
       platenumber: null,
+      fromlocation: null,
+      tolocation: null,
       edit_deviceid: null,
       edit_drivername: null,
       edit_platenumber: null,
+      edit_tolocation: null,
+      edit_fromlocation: null,
     };
   }
 
@@ -33,13 +37,14 @@ class Drivers extends Component {
     this.props.firebase.driver(id).on("value", (snapshot) => {
 
       const usersObject =  snapshot.val() != null ? snapshot.val() : "";
-      this.setState({edit_uid: null ?? id, edit_platenumber: null ?? usersObject.plate_number, edit_deviceid: null ?? usersObject.device_id, edit_drivername: null ?? usersObject.driver_name });
+      this.setState({edit_fromlocation: null ?? usersObject.from_location, edit_tolocation: null ?? usersObject.to_location, edit_uid: null ?? id, edit_platenumber: null ?? usersObject.plate_number, edit_deviceid: null ?? usersObject.device_id, edit_drivername: null ?? usersObject.driver_name });
     });
   }
 
   toggleDelete(id) {
 console.log(id);
 this.props.firebase.driver(id).remove();
+cogoToast.error('You successfully delete the device details.');
   }
 
   driverNameChangeHandler = (event) => {
@@ -54,6 +59,14 @@ this.props.firebase.driver(id).remove();
     this.setState({ platenumber: event.target.value });
   };
 
+  toLocationChangeHandler = (event) => {
+    this.setState({ tolocation: event.target.value });
+  };
+
+  fromLocationChangeHandler = (event) => {
+    this.setState({ fromlocation: event.target.value });
+  };
+
   edit_driverNameChangeHandler = (event) => {
     this.setState({ edit_drivername: event.target.value });
   };
@@ -66,13 +79,23 @@ this.props.firebase.driver(id).remove();
     this.setState({ edit_platenumber: event.target.value });
   };
 
+  edit_toLocationChangeHandler = (event) => {
+    this.setState({ edit_tolocation: event.target.value });
+  };
+
+  edit_fromLocationChangeHandler = (event) => {
+    this.setState({ edit_fromlocation: event.target.value });
+  };
+
   mySubmitHandler = (event) => {
     event.preventDefault();
     this.props.firebase
       .writeUserData(
         this.state.deviceid,
         this.state.drivername,
-        this.state.platenumber
+        this.state.platenumber,
+        this.state.tolocation,
+        this.state.fromlocation
       )
       .then((result) => {
         const currentState = this.state.active;
@@ -82,6 +105,8 @@ this.props.firebase.driver(id).remove();
           deviceid: "",
           platenumber: "",
           drivername: "",
+          tolocation: "",
+          fromlocation: ""
         });
         cogoToast.success('You successfully add new device details.');
       });
@@ -94,7 +119,9 @@ this.props.firebase.driver(id).remove();
         this.state.edit_uid,
         this.state.edit_deviceid,
         this.state.edit_drivername,
-        this.state.edit_platenumber
+        this.state.edit_platenumber,
+        this.state.edit_tolocation,
+        this.state.edit_fromlocation
       )
       .then((result) => {
         const currentState = this.state.activeEdit;
@@ -103,6 +130,8 @@ this.props.firebase.driver(id).remove();
           edit_deviceid: "",
           edit_platenumber: "",
           edit_drivername: "",
+          edit_fromlocation: "",
+          edit_tolocation: ""
         });
         cogoToast.success('You successfully edit device details.');
       });
@@ -234,6 +263,8 @@ this.props.firebase.driver(id).remove();
                   <th class="w-1/2 px-4 py-2">Driver Name</th>
                   <th class="w-1/4 px-4 py-2">Plate Number</th>
                   <th class="w-1/4 px-4 py-2">Device ID</th>
+                  <th class="w-1/4 px-4 py-2">From Location</th>
+                  <th class="w-1/4 px-4 py-2">To Location</th>
                   <th class="w-1/4 px-4 py-2"></th>
                   <th class="w-1/4 px-4 py-2"></th>
                 </tr>
@@ -246,6 +277,8 @@ this.props.firebase.driver(id).remove();
                         <td class="border px-4 py-2">{item.driver_name}</td>
                         <td class="border px-4 py-2">{item.plate_number}</td>
                         <td class="border px-4 py-2">{item.device_id}</td>
+                        <td class="border px-4 py-2">{item.from_location}</td>
+                        <td class="border px-4 py-2">{item.to_location}</td>
                         <td class="border px-4 py-2">
                           <button
                             onClick={() => this.toggleClassEdit(item.uid)}
@@ -350,46 +383,12 @@ this.props.firebase.driver(id).remove();
             </div>
 
             <div class="md:flex md:items-center mb-6">
-              <div class="md:w-1/3"></div>
-            </div>
-            <div class="md:flex md:items-center">
-              <div class="md:w-1/3"></div>
-              <div class="md:w-2/3">
-                <button
-                  type="submit"
-                  class="shadow bg-blue-500 hover:bg-blue-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded w-full"
-                >
-                  Add
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-        
-        <div
-          class={`absolute z-50 bg-gray-900  bottom-0 h-screen w-6/12  lg:w-1/6 sm:w-6/6 md:w-3/5 right-0 ${
-            this.state.active ? "hidden" : null
-          }`}
-        >
-          <img
-            onClick={() => this.toggleClass()}
-            src="https://image.flaticon.com/icons/png/512/45/45372.png"
-            class="float-right cursor-pointer"
-            style={{ margin: 15 + "px" }}
-            width="35"
-            height="35"
-          />
-          <h1 class="text-white text-center pt-5 font-bold text-lg">
-            Add Driver
-          </h1>
-          <form onSubmit={this.mySubmitHandler} class="w-full max-w-sm p-5">
-            <div class="md:flex md:items-center mb-6">
               <div class="md:w-1/3">
                 <label
                   class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
                   for="inline-full-name"
                 >
-                  Device ID
+                From Location
                 </label>
               </div>
               <div class="md:w-2/3">
@@ -398,19 +397,20 @@ this.props.firebase.driver(id).remove();
                   id="inline-full-name"
                   autoComplete="off"
                   type="text"
-                  name="deviceid"
-                  onChange={this.deviceIdChangeHandler}
-                  value={this.state.deviceid}
+                  name="from_location"
+                  onChange={this.fromLocationChangeHandler}
+                  value={this.state.fromlocation}
                 />
               </div>
             </div>
+
             <div class="md:flex md:items-center mb-6">
               <div class="md:w-1/3">
                 <label
                   class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
                   for="inline-full-name"
                 >
-                  Driver Name
+                To Location
                 </label>
               </div>
               <div class="md:w-2/3">
@@ -419,33 +419,13 @@ this.props.firebase.driver(id).remove();
                   id="inline-full-name"
                   autoComplete="off"
                   type="text"
-                  name="drivername"
-                  onChange={this.driverNameChangeHandler}
-                  value={this.state.drivername}
+                  name="to_location"
+                  onChange={this.toLocationChangeHandler}
+                  value={this.state.tolocation}
                 />
               </div>
             </div>
-            <div class="md:flex md:items-center mb-6">
-              <div class="md:w-1/3">
-                <label
-                  class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                  for="inline-full-name"
-                >
-                  Plate Number
-                </label>
-              </div>
-              <div class="md:w-2/3">
-                <input
-                  class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
-                  id="inline-full-name"
-                  autoComplete="off"
-                  type="text"
-                  name="platenumber"
-                  onChange={this.plateNumberChangeHandler}
-                  value={this.state.platenumber}
-                />
-              </div>
-            </div>
+            
 
             <div class="md:flex md:items-center mb-6">
               <div class="md:w-1/3"></div>
@@ -463,6 +443,8 @@ this.props.firebase.driver(id).remove();
             </div>
           </form>
         </div>
+        
+        
         
        /* Edit */
        <div
@@ -546,6 +528,50 @@ this.props.firebase.driver(id).remove();
                   name="platenumber"
                   onChange={this.edit_plateNumberChangeHandler}
                   value={this.state.edit_platenumber}
+                />
+              </div>
+            </div>
+
+            <div class="md:flex md:items-center mb-6">
+              <div class="md:w-1/3">
+                <label
+                  class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
+                  for="inline-full-name"
+                >
+                From Location
+                </label>
+              </div>
+              <div class="md:w-2/3">
+                <input
+                  class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
+                  id="inline-full-name"
+                  autoComplete="off"
+                  type="text"
+                  name="from_location"
+                  onChange={this.edit_fromLocationChangeHandler}
+                  value={this.state.edit_fromlocation}
+                />
+              </div>
+            </div>
+
+            <div class="md:flex md:items-center mb-6">
+              <div class="md:w-1/3">
+                <label
+                  class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
+                  for="inline-full-name"
+                >
+                To Location
+                </label>
+              </div>
+              <div class="md:w-2/3">
+                <input
+                  class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-blue-500"
+                  id="inline-full-name"
+                  autoComplete="off"
+                  type="text"
+                  name="to_location"
+                  onChange={this.edit_toLocationChangeHandler}
+                  value={this.state.edit_tolocation}
                 />
               </div>
             </div>
