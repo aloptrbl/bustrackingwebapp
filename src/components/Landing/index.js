@@ -17,7 +17,7 @@ const LandingPage = () => (
 	 M85,87.5c0,1.1-0.9,2-2,2h-8c-1.1,0-2-0.9-2-2v-4h12V87.5z M91,77.5c0,1.1-0.9,2-2,2H11c-1.1,0-2-0.9-2-2v-4h82V77.5z M91,69.5H78
 	v-10c0-0.5,0.5-1,1-1h12V69.5z M89,48.5c1.1,0,2,0.9,2,2v4H79c-2.8,0-5,2.2-5,5v10h-6v-21H89z"/>
 </svg>
-    <span class="font-semibold text-xl tracking-tight">UTeM Bus Tracking Web App</span>
+    <span class="font-semibold text-xl tracking-tight">Bus Location Monitoring Application (Admin)</span>
   </div>
   <div class="block lg:hidden">
     <button class="flex items-center px-3 py-2 border rounded text-teal-200 border-teal-400 hover:text-white hover:border-white">
@@ -45,8 +45,8 @@ const LandingPage = () => (
               <div class="flex-row flex">
               <div class="flex-col flex">
               <img src={Bus} class="w-48 pl-10" />
-              <h1 class="uppercase text-6xl text-blue-900 font-bold leading-none tracking-wide mb-2">UTeM Bus Tracking</h1>
-                <h2 class="uppercase text-4xl text-orange-500 text-secondary tracking-widest mb-6">WEB APP</h2>
+              <h1 class="uppercase text-6xl text-blue-900 font-bold leading-none tracking-wide mb-2">Bus Location Monitoring</h1>
+                <h2 class="uppercase text-4xl text-orange-500 text-secondary tracking-widest mb-6">Application</h2>
                 </div>
  
               </div>

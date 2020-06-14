@@ -88,7 +88,9 @@ class SignInFormBase extends Component {
                                       Sign In
                                   </button>
                               </div>
-                             
+                          <div class="text-center mt-4">
+                          <a href="/signup" class="no-underline hover:underline text-blue-dark text-xs">Sign Up</a>
+                          </div>
                           <div class="text-center mt-4">
                               <a class="no-underline hover:underline text-blue-dark text-xs" href="{{ route('password.request') }}">
                                   Forgot Your Password?

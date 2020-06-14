@@ -34,6 +34,7 @@ class Firebase {
   driver = driver => this.db.ref(`drivers/${driver}`);
   users = () => this.db.ref('users');
   drivers = () => this.db.ref('drivers');
+  currentuser = () => this.auth.onAuthStateChanged();
 
   writeUserData = (userId, name, platenumber, to_location, from_location) => 
     this.db.ref('drivers').push().set({

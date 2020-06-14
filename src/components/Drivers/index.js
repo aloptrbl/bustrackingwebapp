@@ -149,7 +149,9 @@ cogoToast.error('You successfully delete the device details.');
           : null;
       this.setState({ User: usersList });
     });
-  }
+
+
+  };
   render() {
     return (
 
@@ -188,7 +190,6 @@ cogoToast.error('You successfully delete the device details.');
           <div class="flex items-center h-full text-sm">
             <div class="flex items-center h-full">
               <a href="#" class="flex items-center text-white h-full px-4">
-                Alop
               </a>
               <a href="#" class="flex items-center text-white h-full px-4">
                 Sign Out

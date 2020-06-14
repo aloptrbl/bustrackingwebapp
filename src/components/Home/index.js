@@ -119,7 +119,7 @@ return (
     </div>
     <div class="flex items-center h-full text-sm">
         <div class="flex items-center h-full">
-            <a href="#" class="flex items-center text-white h-full px-4">Alop</a>
+            <a href="#" class="flex items-center text-white h-full px-4"></a>
             <a href="#" class="flex items-center text-white h-full px-4">Sign Out</a>
         </div>
     </div>
